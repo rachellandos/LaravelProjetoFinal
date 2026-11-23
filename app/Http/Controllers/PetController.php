@@ -16,7 +16,7 @@ class PetController extends Controller
     {
         $searchPar = request()->query('search') ? request()->query('search') : null;
 
-        $query = Pet::approvalStatus('approved')->select(
+        $query = Pet::approvalStatus('approved')->status('perdido')->select(
             'id',
             'name',
             'description',

@@ -17,4 +17,10 @@ class Pet extends Model
     {
         $query->where('approval_status', $type);
     }
+
+    #[Scope]
+    protected function status(Builder $query, string $type): void
+    {
+        $query->where('status', $type);
+    }
 }
