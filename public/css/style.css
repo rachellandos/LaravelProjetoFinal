@@ -9,3 +9,17 @@
 .photo-table{
     width: 50px;
 }
+
+.pet-info-photo{
+    width: 500px;
+}
+
+.photo-profile{
+    width: 300px;
+}
+
+.card-img-top {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}

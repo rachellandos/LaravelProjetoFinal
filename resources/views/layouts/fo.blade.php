@@ -11,6 +11,11 @@
     {{-- bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous" defer>
+    </script>
+
 </head>
 
 <body>
@@ -34,34 +39,46 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('users.all') }}">Utilizadores</a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a class="nav-link" href="{{ route('tasks.all') }}">Tarefas</a>
-                        </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('pets.all') }}">Ver Animais</a>
+                        </li>
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('gifts.all') }}">Prendas</a>
                         </li> --}}
                     </ul>
-
+    @auth
+        <h2>Olá, {{ Auth::user()->name }}</h2>
+    @endauth
                     @if (Route::has('login'))
                         <nav class="navbar-nav nav-pills d-flex flex-row justify-content-center gap-4">
                             @auth
-                                {{-- <a href="{{ route('dashboard') }}"
+                                @if (\App\Models\Pet::where('user_id', Auth::id())->exists())
+                                    <a href="{{ route('pets.mine') }}"
+                                        class="nav-link px-5 text-body border border-secondary rounded-pill leading-normal">
+                                        Os meus anúncios
+                                    </a>
+                                @endif
+                                <a href="{{ route('pets.add') }}"
                                     class="nav-link px-5 text-body border border-secondary rounded-pill leading-normal">
-                                    Dashboard
-                                </a> --}}
+                                    Publicar anuncio
+                                </a>
+                                @if (Auth::user()?->user_type == \App\Models\User::TYPE_ADMIN)
+                                    <a href="{{ route('dashboard') }}"
+                                        class="nav-link px-5 text-body border border-secondary rounded-pill leading-normal">
+                                        Dashboard
+                                    </a>
+                                @endif
                                 <form action="{{ route('logout') }}" method="post">
                                     @csrf
                                     <button type="submit" class="btn-solid theme-warning rounded-pill">Logout</button>
                                 </form>
                             @else
-                                <a href="{{ route('login') }}"
-                                    class="btn-solid theme-accent px-5 rounded-pill">
+                                <a href="{{ route('login') }}" class="btn-solid theme-accent px-5 rounded-pill">
                                     Log in
                                 </a>
 
                                 @if (Route::has('users.add'))
-                                    <a href="{{ route('users.add') }}"
-                                        class="btn-subtle theme-accent px-5 rounded-pill">
+                                    <a href="{{ route('users.add') }}" class="btn-subtle theme-accent px-5 rounded-pill">
                                         Register
                                     </a>
                                 @endif
@@ -80,9 +97,7 @@
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-WyOxWvTyr1QaMPfiPJSv76iReVthorl5uWlFtZPyK0IEB0hGzo9y5Bp9mYanr8Bu" crossorigin="anonymous">
-    </script>
+
 </body>
 
 </html>

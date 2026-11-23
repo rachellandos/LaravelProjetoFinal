@@ -6,11 +6,12 @@
 
 @section('content')
     <h1>Todos os utilizadores 👤</h1>
-    <div class="py-2">
-        @if (session('message'))
+    @if (session('message'))
+        <div class="py-2">
             <div class="alert theme-success py-2">{{ session('message') }}</div>
-        @endif
-    </div>
+        </div>
+    @endif
+
     <form action="" method="get">
         <input type="text" name="search">
         <button class="btn-solid btn-secondary" type="submit">Procurar</button>
@@ -29,7 +30,7 @@
                     @auth
                         <th></th>
                     @endauth
-                    @if (Auth::user() && Auth::user()->email == 'admin@gmail.com')
+                    @if (Auth::user() && Auth::user()->user_type == \App\Models\User::TYPE_ADMIN)
                         <th></th>
                     @endif
                 </tr>
@@ -47,9 +48,9 @@
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         @auth
-                            <td><a href="{{ route('users.edit', $user->id) }}" class="btn-solid theme-info">Ver/Editar</a></td>
+                            <td><a href="{{ route('users.edit', $user->id) }}" class="btn-solid theme-info">Ver</a></td>
                         @endauth
-                        @if (Auth::user() && Auth::user()->email == 'admin@gmail.com')
+                        @if (Auth::user() && Auth::user()->user_type == \App\Models\User::TYPE_ADMIN)
                             <td><a href="{{ route('users.delete', $user->id) }}" class="btn-solid theme-danger">Apagar</a>
                             </td>
                         @endif

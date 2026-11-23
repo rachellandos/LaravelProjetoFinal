@@ -27,8 +27,8 @@ public function loadHomepage () {
 //     return view('users.addusers');
 // }
 
-// public function loadFallback(){
-//     return view('utils.fallback');
-// }
+public function loadFallback(){
+    return view('utils.fallback');
+}
 
 }

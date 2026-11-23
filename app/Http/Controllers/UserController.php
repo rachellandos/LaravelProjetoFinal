@@ -50,6 +50,10 @@ class UserController extends Controller
             'photo' => 'nullable|image|mimes:jpg,jpeg,png'
         ]);
 
+        if ($request->hasFile('photo')) {
+            $photo = Storage::putFile('userPhotos', $request->photo);
+        }
+
         // depois de validados, inserir na bd
         User::create($request->all());
 
@@ -69,7 +73,7 @@ class UserController extends Controller
      */
     public function editUser(string $id)
     {
-        $userInfo = User::where('id', $id)->select('name', 'email', 'id', 'address', 'nif', 'photo')->first();
+        $userInfo = User::where('id', $id)->select('name', 'email', 'id', 'photo')->first();
 
         return view('users.edituser', compact('userInfo'));
     }
@@ -77,8 +81,10 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateUser(Request $request, string $id)
+    public function updateUser(Request $request)
     {
+        // dd($request->all());
+
         $request->validate([
             'name' => 'required|max:50',
             'photo' => 'image'
@@ -86,14 +92,17 @@ class UserController extends Controller
 
         if ($request->hasFile('photo')) {
             //armazenar no storage e guarda o caminho numa var
+
             $photo = Storage::putFile('userPhotos', $request->photo);
+        } else {
+            $user = User::where('id', $request->id)->first();
+            $photo = $user->photo;
         }
+
 
         User::where('id', $request->id)->update([
             'name' => $request->name,
-            'address' => $request->address,
-            'nif' => $request->nif,
-            'photo' => isset($photo) ? $photo : null,
+            'photo' => $photo,
             'updated_at' => now(),
         ]);
 
@@ -103,8 +112,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function deleteUsers(string $id)
     {
-        //
+        User::where('id', $id)->delete();
+
+        return back();
     }
 }
