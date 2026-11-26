@@ -46,14 +46,14 @@ Route::get('/pets-add', [PetController::class, 'createPets'])->name('pets.add');
 // rota de registar pets no servidor
 Route::post('/store-pets', [PetController::class, 'storePets'])->name('pets.store');
 
-// // rota de apagar pets
-Route::get('/delete-pets/{id}',[PetController::class, 'deletePets'] )->name('pets.delete');
+// rota de apagar pets
+Route::get('/delete-pets/{id}', [PetController::class, 'destroy'])->name('pets.delete')->middleware(['auth', 'admin']);
 
 // rota de ver ou editar pets
- Route::get('/edit-pets/{id}',[PetController::class, 'editPets'] )->name('pets.edit')->middleware('auth');
+Route::get('/edit-pets/{id}', [PetController::class, 'editPets'])->name('pets.edit')->middleware('auth');
 
 // rota de registar o edit no servidor
-Route::put('/update-pets', [PetController::class, 'updatePets'])->name('pets.update');
+Route::put('/update-pets', [PetController::class, 'updatePets'])->name('pets.update')->middleware('auth');
 
 // rota os meus pets perdidos
 Route::get('/my-pets', [PetController::class, 'myPets'])->name('pets.mine')->middleware('auth');
@@ -61,15 +61,24 @@ Route::get('/my-pets', [PetController::class, 'myPets'])->name('pets.mine')->mid
 //******************************************** */
 // rotas de dashboard
 //******************************************** */
-Route::get('/dashboard', [DashboardController::class, 'index']) ->name('dashboard')->middleware('auth', 'admin');;
-Route::get('/pets/{id}', [DashboardController::class, 'showPets'])->name('dashboard.showPet');
+Route::get('/dashboard', [DashboardController::class, 'index']) ->name('dashboard')->middleware('auth', 'admin');
+Route::get('/pets/{id}', [DashboardController::class, 'showPets'])->name('dashboard.showPet')->middleware('auth', 'admin');
+
+// rotas approvar ou rejeitar pedidos de publicação
 Route::post('/pets/{id}/approve', [DashboardController::class, 'approve'])->name('dashboard.approve')->middleware(['auth', 'admin']);
 Route::post('/pets/{id}/reject', [DashboardController::class, 'reject'])->name('dashboard.reject')->middleware(['auth', 'admin']);
 
+// rota de apagar pets
+Route::get('/dashboard/delete-pets/{id}', [DashboardController::class, 'deletePetsD'])->name('dashboard.delete')->middleware(['auth', 'admin']);
+
+// rota de ver ou editar pets
+Route::get('/dashboard/edit-pets/{id}', [DashboardController::class, 'editPetsD'])->name('dashboard.edit')->middleware(['auth', 'admin']);
+
+// rota de registar o edit no servidor
+Route::put('/dashboard/update-pets', [DashboardController::class, 'updatePetsD'])->name('dashboard.update')->middleware(['auth', 'admin']);
 
 //******************************************** */
 // rota fallback
 //******************************************** */
-
 Route::fallback([UtilController::class, 'loadFallback']);
 

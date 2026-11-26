@@ -63,7 +63,7 @@
                             <td><a href="{{ route('dashboard.showPet', $pet->id) }}" class="btn-solid theme-info">Ver</a></td>
                         @endauth
                         @if (Auth::user() && Auth::user()->user_type == \App\Models\User::TYPE_ADMIN)
-                            <td><a href="{{ route('pets.delete', $pet->id) }}" class="btn-solid theme-danger">Apagar</a>
+                            <td><a href="{{ route('dashboard.delete', $pet->id) }}" class="btn-solid theme-danger">Apagar</a>
                             </td>
                         @endif
                     </tr>
@@ -115,10 +115,10 @@
                         @endphp
                         <td class = "bg-solid theme-{{ $colorValue }}">{{ $pet->approval_status }}</td>
                         @auth
-                            <td><a href="{{ route('pets.edit', $pet->id) }}" class="btn-solid theme-info">Ver</a></td>
+                            <td><a href="{{ route('dashboard.edit', $pet->id) }}" class="btn-solid theme-info">Ver</a></td>
                         @endauth
                         @if (Auth::user() && Auth::user()->email == 'admin@gmail.com')
-                            <td><a href="{{ route('pets.delete', $pet->id) }}" class="btn-solid theme-danger">Apagar</a>
+                            <td><a href="{{ route('dashboard.delete', $pet->id) }}" class="btn-solid theme-danger">Apagar</a>
                             </td>
                         @endif
                     </tr>

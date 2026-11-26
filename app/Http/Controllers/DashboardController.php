@@ -6,13 +6,14 @@ use App\Models\Pet;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() 
+    public function index()
     {
         $searchPar = request()->query('search') ? request()->query('search') : null;
 
@@ -21,12 +22,12 @@ class DashboardController extends Controller
         //         ->orWhere('species', 'LIKE', "%{$searchPar}%");
         // }
 
-        $petsPending = Pet::approvalStatus('pending')->select('id', 'name', 'city', 'status', 'description', 'species', 'photo', 'created_at','approval_status')
-        ->get();
+        $petsPending = Pet::approvalStatus('pending')->select('id', 'name', 'city', 'status', 'description', 'species', 'photo', 'created_at', 'approval_status')
+            ->get();
 
         $searchPar = request()->query('search') ? request()->query('search') : null;
 
-        $query = Pet::select('id', 'name', 'city', 'status', 'description', 'species', 'photo', 'created_at','approval_status');
+        $query = Pet::select('id', 'name', 'city', 'status', 'description', 'species', 'photo', 'created_at', 'approval_status');
 
         if ($searchPar) {
             $query->where('name', 'LIKE', "%{$searchPar}%")
@@ -87,16 +88,69 @@ class DashboardController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+
+    public function editPetsD(string $id)
     {
-        //
+        $pet = Pet::where('id', $id)
+            ->select(
+                'id',
+                'name',
+                'description',
+                'city',
+                'species',
+                'photo',
+                'status',
+                'approval_status',
+                'created_at',
+                'user_id',
+                'approval_status',
+            )
+            ->first();
+
+        return view('dashboard.editpets', compact('pet'));
+    }
+
+    public function updatePetsD(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|max:50',
+            'species' => 'required|string',
+            'description' => 'string',
+            'status' => 'string|in:perdido,encontrado',
+            'city' => 'required|string',
+            'photo' => 'image|mimes:jpg,jpeg,png'
+        ]);
+
+        if ($request->hasFile('photo')) {
+            //armazenar no storage e guarda o caminho numa var
+            $photo = Storage::putFile('petPhotos', $request->photo);
+        } else {
+            $pet = Pet::where('id', $request->id)->first();
+            $photo = $pet->photo;
+        }
+
+
+        Pet::where('id', $request->id)->update([
+            'name' => $request->name,
+            'species' => $request->species,
+            'description' => $request->description,
+            'city' => $request->city,
+            'status' => $request->status,
+            'photo' => $photo,
+            'approval_status' => 'approved',
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('dashboard')->with('message', 'A modificação foi concluida!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function deletePetsD(string $id)
     {
-        //
+        Pet::where('id', $id)->delete();
+
+        return back();
     }
 }

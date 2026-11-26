@@ -126,7 +126,6 @@ class PetController extends Controller
 
         if ($request->hasFile('photo')) {
             //armazenar no storage e guarda o caminho numa var
-
             $photo = Storage::putFile('petPhotos', $request->photo);
         } else {
             $pet = Pet::where('id', $request->id)->first();
