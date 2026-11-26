@@ -33,7 +33,9 @@ class PetController extends Controller
 
         $pets = $query->get();
 
-        return view('pets.allpets', compact('pets'));
+        $petNum = Pet::approvalStatus('approved')->count();
+
+        return view('pets.allpets', compact('pets', 'petNum'));
     }
 
     /**
